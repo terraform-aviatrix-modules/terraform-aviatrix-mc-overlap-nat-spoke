@@ -1,61 +1,11 @@
-# terraform-aviatrix-module-template
-
-This repository provides standardized instructions and conventions for creating Aviatrix modules.
-
-#### Instructions
-1. Create a new repository from this template, by clicking the green "Use this template" button. Make sure to use the [module naming convention](#module-naming-convention)
-2. Clone the repository to your system with ```git clone <repository>```
-5. Edit the repository and commit and update the new repository:
-    - Commit changes: ```git commit -am "Description of changes"```
-    - Push to repository: ```git push origin master```
-6. Update the readme.md file
-    - Remove all content above [the line](#delete-everything-above-and-including-this-line).
-    - Fill out the rest of file based on the provided template.
-7. When ready for release, create a [tag](#tagging).
-
-#### Conventions
-
-###### Repositories
-- For each module, a new reposity shall be created. This is for the purpose of:
-    - Version control per module
-    - Issue handling/feature requests per module
-    - Easier consumption of the module in projects and publication in registers like Terraform Cloud
-
-###### Module Naming convention
-We will use the following convention for naming repositories:
-
-**terraform-aviatrix-\<cloudname or mc for multi-cloud>-\<function>**
-
-Function can be a single word, or more if required to accurately describe the module function. These should be seperated by hyphens. Example:
-
-**terraform-aviatrix-aws-transit-firenet**
-
-###### Resource Naming convention
-```A naming convention for objects created through our modules needs to be decided upon and inserted here.```
-
-###### Tagging
-In order to use modules, it is best practice to tag versions when they are ready for consumption. The format to be used for this is "vx.x.x" e.g. v0.0.1. This can be done on Github by clicking "Create a new release". It is also possible to do this from your system. Make sure you committed your changes to the master branch. After that, create a new tag with ```git tag vx.x.x``` and push the tagged version to the tagged branch with ```git push origin vx.x.x```.
-
-As soon as a module is ready for publishing publicly, the tag release should move up to the first major release. A tag v1.0.0 should be created and the repository can now be altered from a private to a public.
-
-###### Module layout
-The repository contains the default file layout that is recommended to use.
-file | use
-:---|:---
-main.tf | This should contain the resources to be created
-variables.tf | This should contain all expected input variables
-output.tf | This should contain all output objects
-
-Diagram images used in the readme.md should be stored on a publicly available environment. E.g. a public s3 bucket. The reason for that is, when publishing these modules at some point (e.g. Terraform Registry), the image source should always be publicly accessible, even though the repository itself might not be.
-
-
-#### Delete everything above and including this line
-***
-
-# Repository Name
+# terraform-aviatrix-mc-overlap-nat-spoke
 
 ### Description
-\<Provide a description of the module>
+This configures Aviatrix spoke gateways to deal with IP overlap in the spoke VNET/VPC by adding NAT rules and route propagation.
+The actual spoke gateway deployment happens outside of this module. It can be combined with the Aviatrix spoke deployment modules.
+
+This module uses hide-nat (Source-NAT, SNAT) to hide all traffic initiated from the spoke VNET/VPC behind a unique gateway IP address.
+In order to expose services hosted inside the VNET/VPC to the outside world, a combination of destination NAT (DNAT) and SNAT is used.
 
 ### Diagram
 \<Provide a diagram of the high level constructs thet will be created by this module>
@@ -64,19 +14,46 @@ Diagram images used in the readme.md should be stored on a publicly available en
 ### Compatibility
 Module version | Terraform version | Controller version | Terraform provider version
 :--- | :--- | :--- | :---
-v1.0.2 | 0.12 | 6.1 | 0.2.16
-v1.0.1 | | |
-v1.0.0 | | |
+v1.0.0 | 0.13-1.0.1 | >=6.4 | >=0.2.19
 
 ### Usage Example
 ```
-module "transit_aws_1" {
-  source  = "terraform-aviatrix-modules/aws-transit/aviatrix"
+module "spoke1_nat" {
+  source  = "terraform-aviatrix-modules/mc-overlap-nat-spoke/aviatrix"
   version = "1.0.0"
 
-  cidr = "10.1.0.0/20"
-  region = "eu-west-1"
-  aws_account_name = "AWS"
+  #Tip, use count on the module to create or destroy the NAT rules based on spoke gateway attachement
+  #Example: count = var.attached ? 1 : 0 #Deploys the module only if var.attached is true.
+
+  spoke_gw_object = data.aviatrix_spoke_gateway.spoke1
+  spoke_cidrs = ["172.31.0.0/20",]
+  transit_gw_name = "avx-transit-gw"
+  gw1_snat_addr = "10.255.1.1"
+  gw2_snat_addr = "10.255.1.2"
+  dnat_addrs = ["10.255.255.1","10.255.255.2"]
+  dnat_rules = {
+      rule1 = {
+          dst_cidr = "10.255.255.1",
+          dst_port = "80",
+          protocol = "tcp"
+          dnat_ips = "172.31.16.4",
+          dnat_port = "80"
+      }
+      rule2 = {
+          dst_cidr = "10.255.255.1",
+          dst_port = "8443",
+          protocol = "tcp"
+          dnat_ips = "172.31.16.4",
+          dnat_port = "443"
+      }      
+      rule3 = {
+          dst_cidr = "10.255.255.2",
+          dst_port = "80",
+          protocol = "tcp"
+          dnat_ips = "172.31.16.5",
+          dnat_port = "80"
+      }           
+  }
 }
 ```
 
@@ -85,13 +62,18 @@ The following variables are required:
 
 key | value
 :--- | :---
-\<keyname> | \<description of value that should be provided in this variable>
+spoke_gw_object | The Aviatrix spoke gateway object with all attributes
+spoke_cidrs | VNET or VPC CIDRs (typically one, but can be multiple)
+transit_gw_name | Name of the transit gateway, to determine the connection for SNAT rule.
+gw1_snat_addr | IP Address to be used for hide natting traffic sourced from the spoke VNET/VPC
 
 The following variables are optional:
 
 key | default | value 
 :---|:---|:---
-\<keyname> | \<default value> | \<description of value that should be provided in this variable>
+gw2_snat_addr | | IP Address to be used for hide natting traffic sourced from the spoke VNET/VPC. Required when spoke is HA pair.
+dnat_addrs | | When DNAT rules are configured, the addresses used for them, need to be configured in this list.
+dnat_rules | | Contains the properties to create the DNAT rules. When left empty, only SNAT for traffic initiated from the spoke VNET/VPC is configured. Create as many unique rules as you like.
 
 ### Outputs
 This module will return the following outputs:
