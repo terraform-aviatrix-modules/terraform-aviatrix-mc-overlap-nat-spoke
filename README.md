@@ -35,24 +35,24 @@ module "spoke1_nat" {
       rule1 = {
           dst_cidr = "10.255.255.1",
           dst_port = "80",
-          protocol = "tcp"
+          protocol = "tcp",
           dnat_ips = "172.31.16.4",
-          dnat_port = "80"
-      }
+          dnat_port = "80",
+      },
       rule2 = {
           dst_cidr = "10.255.255.1",
           dst_port = "8443",
-          protocol = "tcp"
+          protocol = "tcp",
           dnat_ips = "172.31.16.4",
-          dnat_port = "443"
-      }      
+          dnat_port = "443",
+      },      
       rule3 = {
           dst_cidr = "10.255.255.2",
           dst_port = "80",
-          protocol = "tcp"
+          protocol = "tcp",
           dnat_ips = "172.31.16.5",
-          dnat_port = "80"
-      }           
+          dnat_port = "80",
+      },           
   }
 }
 ```

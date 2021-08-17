@@ -60,6 +60,7 @@ resource "aviatrix_gateway_snat" "gw_2" {
 }
 
 resource "aviatrix_gateway_dnat" "dnat_rules" {
+  count      = var.dnat_rules == {} ? 0 : 1
   gw_name    = var.spoke_gw_object.gw_name
   sync_to_ha = true
 
@@ -67,11 +68,11 @@ resource "aviatrix_gateway_dnat" "dnat_rules" {
     for_each = var.dnat_rules
     content {
       src_cidr   = "0.0.0.0/0"
-      dst_cidr   = dnat_policy.value.vip
-      dst_port   = dnat_policy.value.port
+      dst_cidr   = dnat_policy.value.dst_cidr
+      dst_port   = dnat_policy.value.dst_port
       protocol   = dnat_policy.value.protocol
-      dnat_ips   = dnat_policy.value.ip
-      dnat_port  = dnat_policy.value.port
+      dnat_ips   = dnat_policy.value.dnat_ips
+      dnat_port  = dnat_policy.value.dnat_port
       connection = var.transit_gw_name
     }
   }
