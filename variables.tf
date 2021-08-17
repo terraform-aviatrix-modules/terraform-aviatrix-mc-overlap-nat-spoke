@@ -39,5 +39,5 @@ variable "dnat_rules" {
 }
 
 locals {
-  is_ha = length(var.spoke_gw_object.ha_gw_name) > 0 ? true : false
+  is_ha = var.spoke_gw_object.ha_gw_name == null ? true : false
 }

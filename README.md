@@ -33,21 +33,21 @@ module "spoke1_nat" {
   dnat_addrs = ["10.255.255.1","10.255.255.2"]
   dnat_rules = {
       rule1 = {
-          dst_cidr = "10.255.255.1",
+          dst_cidr = "10.255.255.1/32",
           dst_port = "80",
           protocol = "tcp",
           dnat_ips = "172.31.16.4",
           dnat_port = "80",
       },
       rule2 = {
-          dst_cidr = "10.255.255.1",
+          dst_cidr = "10.255.255.1/32",
           dst_port = "8443",
           protocol = "tcp",
           dnat_ips = "172.31.16.4",
           dnat_port = "443",
       },      
       rule3 = {
-          dst_cidr = "10.255.255.2",
+          dst_cidr = "10.255.255.2/32",
           dst_port = "80",
           protocol = "tcp",
           dnat_ips = "172.31.16.5",
