@@ -19,11 +19,6 @@ variable "gw2_snat_addr" {
   default     = ""
 }
 
-variable "dnat_addrs" {
-  description = "When DNAT rules are configured, the addresses used for them, need to be configured in this list."
-  default     = []
-}
-
 variable "dnat_rules" {
   description = "Contains the properties to create the DNAT rules. When left empty, only SNAT for traffic initiated from the spoke VNET/VPC is configured."
   type        = map(any)

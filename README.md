@@ -7,6 +7,8 @@ The actual spoke gateway deployment happens outside of this module. It can be co
 This module uses hide-nat (Source-NAT, SNAT) to hide all traffic initiated from the spoke VNET/VPC behind a unique gateway IP address.
 In order to expose services hosted inside the VNET/VPC to the outside world, a combination of destination NAT (DNAT) and SNAT is used.
 
+Make sure to include gw1_snat_addr, gw2_snat_addr and any dst_cidr's in the dnat rules in the spoke gateway included_advertised_spoke_routes attribute.
+
 ### Diagram
 \<Provide a diagram of the high level constructs thet will be created by this module>
 <img src="<IMG URL>"  height="250">
@@ -30,7 +32,6 @@ module "spoke1_nat" {
   transit_gw_name = "avx-transit-gw"
   gw1_snat_addr = "10.255.1.1"
   gw2_snat_addr = "10.255.1.2"
-  dnat_addrs = ["10.255.255.1","10.255.255.2"]
   dnat_rules = {
       rule1 = {
           dst_cidr = "10.255.255.1/32",
@@ -72,7 +73,6 @@ The following variables are optional:
 key | default | value 
 :---|:---|:---
 gw2_snat_addr | | IP Address to be used for hide natting traffic sourced from the spoke VNET/VPC. Required when spoke is HA pair.
-dnat_addrs | | When DNAT rules are configured, the addresses used for them, need to be configured in this list.
 dnat_rules | | Contains the properties to create the DNAT rules. When left empty, only SNAT for traffic initiated from the spoke VNET/VPC is configured. Create as many unique rules as you like.
 
 ### Outputs
