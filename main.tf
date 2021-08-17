@@ -60,7 +60,7 @@ resource "aviatrix_gateway_snat" "gw_2" {
 }
 
 resource "aviatrix_gateway_dnat" "dnat_rules" {
-  count      = var.dnat_rules == {} ? 0 : 1
+  count      = contains(keys(var.dnat_rules), "dummy") ? 0 : 1
   gw_name    = var.spoke_gw_object.gw_name
   sync_to_ha = true
 

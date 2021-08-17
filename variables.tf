@@ -27,7 +27,15 @@ variable "dnat_addrs" {
 variable "dnat_rules" {
   description = "Contains the properties to create the DNAT rules. When left empty, only SNAT for traffic initiated from the spoke VNET/VPC is configured."
   type        = map(any)
-  default     = {}
+  default = {
+    dummy = {
+      dst_cidr  = "0.0.0.0/0",
+      dst_port  = "80",
+      protocol  = "tcp",
+      dnat_ips  = "0.0.0.0",
+      dnat_port = "80",
+    }
+  }
 }
 
 locals {
