@@ -30,7 +30,7 @@ resource "aviatrix_gateway_snat" "gw_1" {
 
 resource "aviatrix_gateway_snat" "gw_2" {
   count      = local.is_ha ? 1 : 0
-  gw_name    = local.is_ha ? var.spoke_gw_object.ha_gw_name : ""
+  gw_name    = local.is_ha ? var.spoke_gw_object.ha_gw_name : "dummy"
   sync_to_ha = false
   snat_mode  = "customized_snat"
 
@@ -54,7 +54,7 @@ resource "aviatrix_gateway_snat" "gw_2" {
       connection = "None"
       interface  = "eth0"
       protocol   = "all"
-      snat_ips   = local.is_ha ? var.spoke_gw_object.ha_private_ip : ""
+      snat_ips   = local.is_ha ? var.spoke_gw_object.ha_private_ip : "1.1.1.1"
     }
   }
 }
