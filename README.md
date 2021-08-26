@@ -10,8 +10,7 @@ In order to expose services hosted inside the VNET/VPC to the outside world, a c
 Make sure to include gw1_snat_addr, gw2_snat_addr and any dst_cidr's in the dnat rules in the spoke gateway included_advertised_spoke_routes attribute.
 
 ### Diagram
-\<Provide a diagram of the high level constructs thet will be created by this module>
-<img src="<IMG URL>"  height="250">
+<img src="https://github.com/terraform-aviatrix-modules/terraform-aviatrix-mc-overlap-nat-spoke/blob/master/img/terraform-aviatrix-mc-overlap-nat-spoke.png?raw=true">
 
 ### Compatibility
 Module version | Terraform version | Controller version | Terraform provider version
