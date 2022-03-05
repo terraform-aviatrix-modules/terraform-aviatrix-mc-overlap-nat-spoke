@@ -9,7 +9,6 @@ resource "aviatrix_gateway_snat" "gw_1" {
       src_cidr   = snat_policy.value
       dst_cidr   = "0.0.0.0/0"
       connection = var.transit_gw_name
-      interface  = "eth0"
       protocol   = "all"
       snat_ips   = var.gw1_snat_addr
     }
@@ -40,7 +39,6 @@ resource "aviatrix_gateway_snat" "gw_2" {
       src_cidr   = snat_policy.value
       dst_cidr   = "0.0.0.0/0"
       connection = var.transit_gw_name
-      interface  = "eth0"
       protocol   = "all"
       snat_ips   = var.gw2_snat_addr
     }
@@ -78,7 +76,7 @@ resource "aviatrix_gateway_dnat" "dnat_rules" {
   }
 
   dynamic "dnat_policy" {
-    for_each = var.uturnnat ? var.dnat_rules : {}
+    for_each = var.uturnnat ? var.dnat_rules : {} #Only create DNAT policy for U-Turn NAT if turned on
     content {
       src_cidr  = "0.0.0.0/0"
       dst_cidr  = dnat_policy.value.dst_cidr
