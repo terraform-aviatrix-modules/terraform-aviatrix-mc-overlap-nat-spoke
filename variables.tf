@@ -19,6 +19,11 @@ variable "gw2_snat_addr" {
   default     = ""
 }
 
+variable "uturnnat" {
+  description = "Make the DNAT IP reachable inside the spoke VNET/VPC through U-Turn NAT"
+  default = false
+}
+
 variable "dnat_rules" {
   description = "Contains the properties to create the DNAT rules. When left empty, only SNAT for traffic initiated from the spoke VNET/VPC is configured."
   type        = map(any)

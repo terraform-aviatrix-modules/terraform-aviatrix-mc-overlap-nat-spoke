@@ -15,6 +15,8 @@ Make sure to include gw1_snat_addr, gw2_snat_addr and any dst_cidr's in the dnat
 ### Compatibility
 Module version | Terraform version | Controller version | Terraform provider version
 :--- | :--- | :--- | :---
+v1.0.2 | 0.13-1.0.1 | >=6.4 | >=0.2.19
+v1.0.1 | 0.13-1.0.1 | >=6.4 | >=0.2.19
 v1.0.0 | 0.13-1.0.1 | >=6.4 | >=0.2.19
 
 ### Usage Example
@@ -73,6 +75,7 @@ key | default | value
 :---|:---|:---
 gw2_snat_addr | | IP Address to be used for hide natting traffic sourced from the spoke VNET/VPC. Required when spoke is HA pair.
 dnat_rules | | Contains the properties to create the DNAT rules. When left empty, only SNAT for traffic initiated from the spoke VNET/VPC is configured. Create as many unique rules as you like.
+uturnnat | false | Set to true to also make the DNAT IP reachable inside the spoke VNET/VPC through U-Turn NAT.
 
 ### Outputs
 This module will return the following outputs:

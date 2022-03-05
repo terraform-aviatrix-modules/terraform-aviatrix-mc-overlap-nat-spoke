@@ -76,4 +76,17 @@ resource "aviatrix_gateway_dnat" "dnat_rules" {
       connection = var.transit_gw_name
     }
   }
+
+  dynamic "dnat_policy" {
+    for_each = var.uturnnat ? var.dnat_rules : {}
+    content {
+      src_cidr   = "0.0.0.0/0"
+      dst_cidr   = dnat_policy.value.dst_cidr
+      dst_port   = dnat_policy.value.dst_port
+      protocol   = dnat_policy.value.protocol
+      dnat_ips   = dnat_policy.value.dnat_ips
+      dnat_port  = dnat_policy.value.dnat_port
+      interface = "eth0"
+    }
+  }
 }
