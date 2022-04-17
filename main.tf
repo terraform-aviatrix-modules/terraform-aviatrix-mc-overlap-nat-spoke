@@ -67,10 +67,10 @@ resource "aviatrix_gateway_dnat" "dnat_rules" {
     content {
       src_cidr   = "0.0.0.0/0"
       dst_cidr   = dnat_policy.value.dst_cidr
-      dst_port   = dnat_policy.value.dst_port
-      protocol   = dnat_policy.value.protocol
       dnat_ips   = dnat_policy.value.dnat_ips
-      dnat_port  = dnat_policy.value.dnat_port
+      dst_port   = try(dnat_policy.value.dst_port, null)
+      protocol   = try(dnat_policy.value.protocol, null)
+      dnat_port  = try(dnat_policy.value.dnat_port, null)
       connection = var.transit_gw_name
     }
   }
@@ -80,10 +80,10 @@ resource "aviatrix_gateway_dnat" "dnat_rules" {
     content {
       src_cidr  = "0.0.0.0/0"
       dst_cidr  = dnat_policy.value.dst_cidr
-      dst_port  = dnat_policy.value.dst_port
-      protocol  = dnat_policy.value.protocol
       dnat_ips  = dnat_policy.value.dnat_ips
-      dnat_port = dnat_policy.value.dnat_port
+      dst_port  = try(dnat_policy.value.dst_port, null)
+      protocol  = try(dnat_policy.value.protocol, null)
+      dnat_port = try(dnat_policy.value.dnat_port, null)
       interface = "eth0"
     }
   }

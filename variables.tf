@@ -27,6 +27,7 @@ variable "uturnnat" {
 variable "dnat_rules" {
   description = "Contains the properties to create the DNAT rules. When left empty, only SNAT for traffic initiated from the spoke VNET/VPC is configured."
   type        = map(any)
+  nullable    = false
   default = {
     dummy = {
       dst_cidr  = "0.0.0.0/0",
