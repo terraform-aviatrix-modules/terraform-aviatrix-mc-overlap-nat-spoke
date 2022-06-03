@@ -15,6 +15,8 @@ Make sure to include gw1_snat_addr, gw2_snat_addr and any dst_cidr's in the dnat
 ### Compatibility
 Module version | Terraform version | Controller version | Terraform provider version
 :--- | :--- | :--- | :---
+v1.0.4 | 1.1.0-1.2.2 | >=6.5 | >=0.2.19
+v1.0.3 | 0.13-1.0.1 | >=6.4 | >=0.2.19
 v1.0.2 | 0.13-1.0.1 | >=6.4 | >=0.2.19
 v1.0.1 | 0.13-1.0.1 | >=6.4 | >=0.2.19
 v1.0.0 | 0.13-1.0.1 | >=6.4 | >=0.2.19
