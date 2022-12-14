@@ -40,5 +40,5 @@ variable "dnat_rules" {
 }
 
 locals {
-  is_ha = var.spoke_gw_object.ha_gw_size != null
+  is_ha = var.spoke_gw_object.ha_gw_size != null || var.spoke_gw_object.ha_gw_size != ""
 }
