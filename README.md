@@ -26,7 +26,7 @@ v1.0.0 | 0.13-1.0.1 | >=6.4 | >=0.2.19
 ```
 module "spoke1_nat" {
   source  = "terraform-aviatrix-modules/mc-overlap-nat-spoke/aviatrix"
-  version = "1.0.2"
+  version = "1.0.5"
 
   #Tip, use count on the module to create or destroy the NAT rules based on spoke gateway attachement
   #Example: count = var.attached ? 1 : 0 #Deploys the module only if var.attached is true.
