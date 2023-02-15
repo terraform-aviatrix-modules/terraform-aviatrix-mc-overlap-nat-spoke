@@ -87,8 +87,8 @@ resource "aviatrix_gateway_dnat" "dnat_rules_gw1" {
 }
     
 
-resource "aviatrix_gateway_dnat" "dnat_rules_gw2" {
-  count      = contains(keys(var.dnat_rules), "dummy") ? 0 : 1
+resource "aviatrix_gateway_dnat" "dnat_rules_gw2" {  
+  count      = contains(keys(var.dnat_rules), "dummy") ? 0 : (local.is_ha ? 1 : 0)
   gw_name    = var.spoke_gw_object.ha_gw_name
 
   dynamic "dnat_policy" {
