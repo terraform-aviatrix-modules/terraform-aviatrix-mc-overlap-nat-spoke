@@ -1,6 +1,5 @@
 resource "aviatrix_gateway_snat" "gw_1" {
   gw_name    = var.spoke_gw_object.gw_name
-  sync_to_ha = false
   snat_mode  = "customized_snat"
 
   dynamic "snat_policy" {
@@ -30,7 +29,6 @@ resource "aviatrix_gateway_snat" "gw_1" {
 resource "aviatrix_gateway_snat" "gw_2" {
   count      = local.is_ha ? 1 : 0
   gw_name    = local.is_ha ? var.spoke_gw_object.ha_gw_name : "dummy"
-  sync_to_ha = false
   snat_mode  = "customized_snat"
 
   dynamic "snat_policy" {
@@ -57,10 +55,41 @@ resource "aviatrix_gateway_snat" "gw_2" {
   }
 }
 
-resource "aviatrix_gateway_dnat" "dnat_rules" {
+resource "aviatrix_gateway_dnat" "dnat_rules_gw1" {
   count      = contains(keys(var.dnat_rules), "dummy") ? 0 : 1
   gw_name    = var.spoke_gw_object.gw_name
-  sync_to_ha = true
+
+  dynamic "dnat_policy" {
+    for_each = var.dnat_rules
+    content {
+      src_cidr   = "0.0.0.0/0"
+      dst_cidr   = dnat_policy.value.dst_cidr
+      dnat_ips   = dnat_policy.value.dnat_ips
+      dst_port   = try(dnat_policy.value.dst_port, null)
+      protocol   = try(dnat_policy.value.protocol, null)
+      dnat_port  = try(dnat_policy.value.dnat_port, null)
+      connection = var.transit_gw_name
+    }
+  }
+
+  dynamic "dnat_policy" {
+    for_each = var.uturnnat ? var.dnat_rules : {} #Only create DNAT policy for U-Turn NAT if turned on
+    content {
+      src_cidr  = "0.0.0.0/0"
+      dst_cidr  = dnat_policy.value.dst_cidr
+      dnat_ips  = dnat_policy.value.dnat_ips
+      dst_port  = try(dnat_policy.value.dst_port, null)
+      protocol  = try(dnat_policy.value.protocol, null)
+      dnat_port = try(dnat_policy.value.dnat_port, null)
+      interface = "eth0"
+    }
+  }
+}
+    
+
+resource "aviatrix_gateway_dnat" "dnat_rules_gw2" {
+  count      = contains(keys(var.dnat_rules), "dummy") ? 0 : 1
+  gw_name    = var.spoke_gw_object.ha_gw_name
 
   dynamic "dnat_policy" {
     for_each = var.dnat_rules
