@@ -1,6 +1,6 @@
 resource "aviatrix_gateway_snat" "gw_1" {
-  gw_name    = var.spoke_gw_object.gw_name
-  snat_mode  = "customized_snat"
+  gw_name   = var.spoke_gw_object.gw_name
+  snat_mode = "customized_snat"
 
   dynamic "snat_policy" {
     for_each = { for cidr in var.spoke_cidrs : cidr => cidr }
@@ -27,9 +27,9 @@ resource "aviatrix_gateway_snat" "gw_1" {
 }
 
 resource "aviatrix_gateway_snat" "gw_2" {
-  count      = local.is_ha ? 1 : 0
-  gw_name    = local.is_ha ? var.spoke_gw_object.ha_gw_name : "dummy"
-  snat_mode  = "customized_snat"
+  count     = local.is_ha ? 1 : 0
+  gw_name   = local.is_ha ? var.spoke_gw_object.ha_gw_name : "dummy"
+  snat_mode = "customized_snat"
 
   dynamic "snat_policy" {
     for_each = { for cidr in var.spoke_cidrs : cidr => cidr }
@@ -56,8 +56,8 @@ resource "aviatrix_gateway_snat" "gw_2" {
 }
 
 resource "aviatrix_gateway_dnat" "dnat_rules_gw1" {
-  count      = contains(keys(var.dnat_rules), "dummy") ? 0 : 1
-  gw_name    = var.spoke_gw_object.gw_name
+  count   = contains(keys(var.dnat_rules), "dummy") ? 0 : 1
+  gw_name = var.spoke_gw_object.gw_name
 
   dynamic "dnat_policy" {
     for_each = var.dnat_rules
@@ -85,11 +85,11 @@ resource "aviatrix_gateway_dnat" "dnat_rules_gw1" {
     }
   }
 }
-    
 
-resource "aviatrix_gateway_dnat" "dnat_rules_gw2" {  
-  count      = contains(keys(var.dnat_rules), "dummy") ? 0 : (local.is_ha ? 1 : 0)
-  gw_name    = var.spoke_gw_object.ha_gw_name
+
+resource "aviatrix_gateway_dnat" "dnat_rules_gw2" {
+  count   = contains(keys(var.dnat_rules), "dummy") ? 0 : (local.is_ha ? 1 : 0)
+  gw_name = var.spoke_gw_object.ha_gw_name
 
   dynamic "dnat_policy" {
     for_each = var.dnat_rules
