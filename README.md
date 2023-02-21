@@ -15,7 +15,8 @@ Make sure to include gw1_snat_addr, gw2_snat_addr and any dst_cidr's in the dnat
 ### Compatibility
 Module version | Terraform version | Controller version | Terraform provider version
 :--- | :--- | :--- | :---
-v1.0.5 | 1.1.0-1.2.2 | >=6.5 | >=0.2.19
+v1.0.6 | 1.1.0-1.2.2 | >=6.5 | >=0.2.19
+~~v1.0.5 | 1.1.0-1.2.2 | >=6.5 | >=0.2.19~~
 v1.0.4 | 1.1.0-1.2.2 | >=6.5 | >=0.2.19
 v1.0.3 | 0.13-1.0.1 | >=6.4 | >=0.2.19
 v1.0.2 | 0.13-1.0.1 | >=6.4 | >=0.2.19
@@ -26,7 +27,7 @@ v1.0.0 | 0.13-1.0.1 | >=6.4 | >=0.2.19
 ```
 module "spoke1_nat" {
   source  = "terraform-aviatrix-modules/mc-overlap-nat-spoke/aviatrix"
-  version = "1.0.5"
+  version = "1.0.6"
 
   #Tip, use count on the module to create or destroy the NAT rules based on spoke gateway attachement
   #Example: count = var.attached ? 1 : 0 #Deploys the module only if var.attached is true.
