@@ -2,6 +2,7 @@ resource "aviatrix_gateway_snat" "gw_1" {
   gw_name   = var.spoke_gw_object.gw_name
   snat_mode = "customized_snat"
 
+  #SNAT Policy for all VPC CIDR's towards tunnel interface to transit
   dynamic "snat_policy" {
     for_each = { for cidr in var.spoke_cidrs : cidr => cidr }
     content {
@@ -13,11 +14,25 @@ resource "aviatrix_gateway_snat" "gw_1" {
     }
   }
 
+  #SNAT Policy for all traffic inbound to spoke, to pin return traffic to same spoke GW
   dynamic "snat_policy" {
     for_each = { for cidr in var.spoke_cidrs : cidr => cidr }
     content {
       src_cidr   = "0.0.0.0/0"
       dst_cidr   = snat_policy.value
+      connection = "None"
+      interface  = "eth0"
+      protocol   = "all"
+      snat_ips   = var.spoke_gw_object.private_ip
+    }
+  }
+
+  #SNAT policy for Egress NAT (e.g. for distributed FQDN egress on spoke GW)
+  dynamic "snat_policy" {
+    for_each = var.egress_nat ? { for cidr in var.spoke_cidrs : cidr => cidr } : {} #Only create SNAT policy if egress NAT is turned on.
+    content {
+      src_cidr   = snat_policy.value
+      dst_cidr   = "0.0.0.0/0"
       connection = "None"
       interface  = "eth0"
       protocol   = "all"
@@ -31,6 +46,7 @@ resource "aviatrix_gateway_snat" "gw_2" {
   gw_name   = local.is_ha ? var.spoke_gw_object.ha_gw_name : "dummy"
   snat_mode = "customized_snat"
 
+  #SNAT Policy for all VPC CIDR's towards tunnel interface to transit
   dynamic "snat_policy" {
     for_each = { for cidr in var.spoke_cidrs : cidr => cidr }
     content {
@@ -42,11 +58,25 @@ resource "aviatrix_gateway_snat" "gw_2" {
     }
   }
 
+  #SNAT Policy for all traffic inbound to spoke, to pin return traffic to same spoke GW
   dynamic "snat_policy" {
     for_each = { for cidr in var.spoke_cidrs : cidr => cidr }
     content {
       src_cidr   = "0.0.0.0/0"
       dst_cidr   = snat_policy.value
+      connection = "None"
+      interface  = "eth0"
+      protocol   = "all"
+      snat_ips   = local.is_ha ? var.spoke_gw_object.ha_private_ip : "1.1.1.1"
+    }
+  }
+
+  #SNAT policy for Egress NAT (e.g. for distributed FQDN egress on spoke GW)
+  dynamic "snat_policy" {
+    for_each = var.egress_nat ? { for cidr in var.spoke_cidrs : cidr => cidr } : {} #Only create SNAT policy if egress NAT is turned on.
+    content {
+      src_cidr   = snat_policy.value
+      dst_cidr   = "0.0.0.0/0"
       connection = "None"
       interface  = "eth0"
       protocol   = "all"

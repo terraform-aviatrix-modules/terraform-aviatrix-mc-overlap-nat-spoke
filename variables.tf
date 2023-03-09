@@ -39,6 +39,12 @@ variable "dnat_rules" {
   }
 }
 
+variable "egress_nat" {
+  description = "When enabled, SNAT rules for access towards the internet are enabled. E.g. for distributed FQDN egress."
+  type        = bool
+  default     = false
+}
+
 locals {
   is_ha = var.spoke_gw_object.ha_gw_size != ""
 }

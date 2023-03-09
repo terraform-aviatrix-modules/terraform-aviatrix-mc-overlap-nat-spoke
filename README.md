@@ -15,20 +15,13 @@ Make sure to include gw1_snat_addr, gw2_snat_addr and any dst_cidr's in the dnat
 ### Compatibility
 Module version | Terraform version | Controller version | Terraform provider version
 :--- | :--- | :--- | :---
-v1.1.0 | 1.1.0-1.2.2 | >=7.0 | >=0.3.0
-v1.0.6 | 1.1.0-1.2.2 | >=6.5 | >=0.2.19
-~~v1.0.5 | 1.1.0-1.2.2 | >=6.5 | >=0.2.19~~
-v1.0.4 | 1.1.0-1.2.2 | >=6.5 | >=0.2.19
-v1.0.3 | 0.13-1.0.1 | >=6.4 | >=0.2.19
-v1.0.2 | 0.13-1.0.1 | >=6.4 | >=0.2.19
-v1.0.1 | 0.13-1.0.1 | >=6.4 | >=0.2.19
-v1.0.0 | 0.13-1.0.1 | >=6.4 | >=0.2.19
+v1.1.1 | 1.1.0-1.2.2 | >=7.0 | >=0.3.0
 
 ### Usage Example
 ```
 module "spoke1_nat" {
   source  = "terraform-aviatrix-modules/mc-overlap-nat-spoke/aviatrix"
-  version = "1.1.0"
+  version = "1.1.1"
 
   #Tip, use count on the module to create or destroy the NAT rules based on spoke gateway attachement
   #Example: count = var.attached ? 1 : 0 #Deploys the module only if var.attached is true.
@@ -80,6 +73,7 @@ key | default | value
 :---|:---|:---
 gw2_snat_addr | | IP Address to be used for hide natting traffic sourced from the spoke VNET/VPC. Required when spoke is HA pair.
 dnat_rules | | Contains the properties to create the DNAT rules. When left empty, only SNAT for traffic initiated from the spoke VNET/VPC is configured. Create as many unique rules as you like.
+egress_nat | false | When enabled, SNAT rules for access towards the internet are enabled. E.g. for distributed FQDN egress.
 uturnnat | false | Set to true to also make the DNAT IP reachable inside the spoke VNET/VPC through U-Turn NAT.
 
 ### Outputs
