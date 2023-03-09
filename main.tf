@@ -32,7 +32,6 @@ resource "aviatrix_gateway_snat" "gw_1" {
     for_each = var.egress_nat ? { for cidr in var.spoke_cidrs : cidr => cidr } : {} #Only create SNAT policy if egress NAT is turned on.
     content {
       src_cidr   = snat_policy.value
-      dst_cidr   = "0.0.0.0/0"
       connection = "None"
       interface  = "eth0"
       protocol   = "all"
@@ -76,7 +75,6 @@ resource "aviatrix_gateway_snat" "gw_2" {
     for_each = var.egress_nat ? { for cidr in var.spoke_cidrs : cidr => cidr } : {} #Only create SNAT policy if egress NAT is turned on.
     content {
       src_cidr   = snat_policy.value
-      dst_cidr   = "0.0.0.0/0"
       connection = "None"
       interface  = "eth0"
       protocol   = "all"
