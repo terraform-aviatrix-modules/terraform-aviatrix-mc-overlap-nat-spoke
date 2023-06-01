@@ -13,9 +13,9 @@ Make sure to include gw1_snat_addr, gw2_snat_addr and any dst_cidr's in the dnat
 <img src="https://github.com/terraform-aviatrix-modules/terraform-aviatrix-mc-overlap-nat-spoke/blob/master/img/terraform-aviatrix-mc-overlap-nat-spoke.png?raw=true">
 
 ### Compatibility
-Module version | Terraform version | Controller version | Terraform provider version
-:--- | :--- | :--- | :---
-v1.1.1 | 1.1.0-1.2.2 | >=7.0 | >=0.3.0
+| Module version | Terraform version | Controller version | Terraform provider version |
+| :------------- | :---------------- | :----------------- | :------------------------- |
+| v1.1.2         | 1.1.0-1.2.2       | >=7.1              | >=0.3.1                    |
 
 ### Usage Example
 ```
@@ -60,25 +60,25 @@ module "spoke1_nat" {
 ### Variables
 The following variables are required:
 
-key | value
-:--- | :---
-spoke_gw_object | The Aviatrix spoke gateway object with all attributes
-spoke_cidrs | VNET or VPC CIDRs (typically one, but can be multiple)
-transit_gw_name | Name of the transit gateway, to determine the connection for SNAT rule.
-gw1_snat_addr | IP Address to be used for hide natting traffic sourced from the spoke VNET/VPC
+| key             | value                                                                          |
+| :-------------- | :----------------------------------------------------------------------------- |
+| spoke_gw_object | The Aviatrix spoke gateway object with all attributes                          |
+| spoke_cidrs     | VNET or VPC CIDRs (typically one, but can be multiple)                         |
+| transit_gw_name | Name of the transit gateway, to determine the connection for SNAT rule.        |
+| gw1_snat_addr   | IP Address to be used for hide natting traffic sourced from the spoke VNET/VPC |
 
 The following variables are optional:
 
-key | default | value 
-:---|:---|:---
-gw2_snat_addr | | IP Address to be used for hide natting traffic sourced from the spoke VNET/VPC. Required when spoke is HA pair.
-dnat_rules | | Contains the properties to create the DNAT rules. When left empty, only SNAT for traffic initiated from the spoke VNET/VPC is configured. Create as many unique rules as you like.
-egress_nat | false | When enabled, SNAT rules for access towards the internet are enabled. E.g. for distributed FQDN egress.
-uturnnat | false | Set to true to also make the DNAT IP reachable inside the spoke VNET/VPC through U-Turn NAT.
+| key           | default | value                                                                                                                                                                              |
+| :------------ | :------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| gw2_snat_addr |         | IP Address to be used for hide natting traffic sourced from the spoke VNET/VPC. Required when spoke is HA pair.                                                                    |
+| dnat_rules    |         | Contains the properties to create the DNAT rules. When left empty, only SNAT for traffic initiated from the spoke VNET/VPC is configured. Create as many unique rules as you like. |
+| egress_nat    | false   | When enabled, SNAT rules for access towards the internet are enabled. E.g. for distributed FQDN egress.                                                                            |
+| uturnnat      | false   | Set to true to also make the DNAT IP reachable inside the spoke VNET/VPC through U-Turn NAT.                                                                                       |
 
 ### Outputs
 This module will return the following outputs:
 
-key | description
-:---|:---
-\<keyname> | \<description of object that will be returned in this output>
+| key        | description                                                   |
+| :--------- | :------------------------------------------------------------ |
+| \<keyname> | \<description of object that will be returned in this output> |
