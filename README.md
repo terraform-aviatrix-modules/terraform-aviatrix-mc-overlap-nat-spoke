@@ -15,13 +15,26 @@ Make sure to include gw1_snat_addr, gw2_snat_addr and any dst_cidr's in the dnat
 ### Compatibility
 Module version | Terraform version | Controller version | Terraform provider version
 :--- | :--- | :--- | :---
-v1.1.1 | 1.1.0-1.2.2 | >=7.0 | >=0.3.0
+v1.1.2 | >= 1.1.0 | >=7.0 | >=3.1.0
 
 ### Usage Example
-```
+```hcl
+module "spoke_1" {
+  source  = "terraform-aviatrix-modules/mc-spoke/aviatrix"
+  version = "1.6.9"
+
+  cloud                            = "AWS"
+  name                             = "App1"
+  cidr                             = "172.31.0.0/200"
+  region                           = "eu-central-1"
+  account                          = "AWS"
+  included_advertised_spoke_routes = "10.255.1.0/30"
+  transit_gw                       = module.aws_transit.transit_gateway.id
+}
+
 module "spoke1_nat" {
   source  = "terraform-aviatrix-modules/mc-overlap-nat-spoke/aviatrix"
-  version = "1.1.1"
+  version = "1.1.2"
 
   #Tip, use count on the module to create or destroy the NAT rules based on spoke gateway attachement
   #Example: count = var.attached ? 1 : 0 #Deploys the module only if var.attached is true.
@@ -54,6 +67,8 @@ module "spoke1_nat" {
           dnat_port = "80",
       },           
   }
+
+  depends_on = [module.spoke_aws_1]
 }
 ```
 
