@@ -5,3 +5,4 @@
 
 ## v1.1.2
 - Fix behavior in detecting HA.
+- Remove 0.0.0.0/0 from DNAT, to trigger route installment.
